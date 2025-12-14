@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Zuvia Tracker (Firebase)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+<header>
+  <div>
+    <h1>ZUVIA TRACKER</h1>
+    <span>Fabrics & Designs · Firebase</span>
+  </div>
+</header>
+
+<main>
+  <div class="status" id="statusText">Connecting to Firebase…</div>
+
+  <div class="tabs">
+    <button class="tab active" data-target="fabricsPanel">Fabrics</button>
+    <button class="tab" data-target="designsPanel">Designs</button>
+  </div>
+
+  <!-- Fabrics -->
+  <section id="fabricsPanel" class="panel active">
+    <h2>Fabrics</h2>
+    <form id="fabricForm">
+      <div><label>Fabric ID *</label><input id="fabricId" required /></div>
+      <div><label>Name *</label><input id="fabricName" required /></div>
+      <div><label>Color / Print</label><input id="fabricColor" /></div>
+      <div><label>Supplier</label><input id="fabricSupplier" /></div>
+      <div><label>Meters *</label><input id="fabricMeters" type="number" step="0.01" required /></div>
+      <div><label>Cost per Meter *</label><input id="fabricCostPerMeter" type="number" step="0.01" required /></div>
+      <div><label>Purchase Date</label><input id="fabricDate" type="date" /></div>
+      <div style="align-self:end;"><button class="btn-primary" type="submit">Save Fabric</button></div>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th><th>Name</th><th>Color</th><th>Supplier</th>
+          <th class="right">Meters</th>
+          <th class="right">Cost/m</th>
+          <th class="right">Total</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="fabricTableBody"></tbody>
+    </table>
+  </section>
+
+  <!-- Designs -->
+  <section id="designsPanel" class="panel">
+    <h2>Designs</h2>
+
+    <form id="designForm">
+      <div><label>Design ID *</label><input id="designId" required /></div>
+      <div><label>Design Name *</label><input id="designName" required /></div>
+      <div><label>Fabric *</label><select id="designFabricId" required></select></div>
+
+      <!-- Size breakdown -->
+      <div><label>XS Qty</label><input id="sizeXS" type="number" min="0" step="1" /></div>
+      <div><label>S Qty</label><input id="sizeS" type="number" min="0" step="1" /></div>
+      <div><label>M Qty</label><input id="sizeM" type="number" min="0" step="1" /></div>
+      <div><label>L Qty</label><input id="sizeL" type="number" min="0" step="1" /></div>
+      <div><label>XL Qty</label><input id="sizeXL" type="number" min="0" step="1" /></div>
+
+      <div><label>Fabric per Piece (m) *</label><input id="designFabricPerPiece" type="number" step="0.01" required /></div>
+      <div><label>Other Costs (total)</label><input id="designOtherCost" type="number" min="0" step="0.01" /></div>
+      <div style="align-self:end;"><button class="btn-primary" type="submit">Save Design</button></div>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Fabric</th>
+          <th>Sizes</th>
+          <th class="right">Total Pieces</th>
+          <th class="right">Fabric Used (m)</th>
+          <th class="right">Fabric Cost</th>
+          <th class="right">Other Cost</th>
+          <th class="right">Total Cost</th>
+          <th class="right">Cost/Piece</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="designTableBody"></tbody>
+    </table>
+  </section>
+
+</main>
+
+<!-- App script -->
+<script type="module" src="app.js"></script>
+</body>
+</html>
