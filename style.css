@@ -144,3 +144,5 @@ tr:nth-child(even) {
   font-size: 0.7rem;
   white-space: nowrap;
 }
+.auth { display: flex; gap: 0.5rem; align-items: center; }
+
