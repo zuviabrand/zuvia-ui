@@ -75,14 +75,27 @@ let state = { fabrics: [], designs: [] };
 
 /* ------------ FX HELPERS (INR -> USD at save time) ------------ */
 async function getUsdPerInrForDate(yyyyMmDd) {
-  const url = `https://api.frankfurter.dev/${yyyyMmDd}?from=INR&to=USD`;
-  const res = await fetch(url);
+  // Use the canonical Frankfurter API domain
+  const base = "https://api.frankfurter.app";
+
+  // Try exact date first
+  let url = `${base}/${yyyyMmDd}?from=INR&to=USD`;
+  let res = await fetch(url);
+
+  // If the date is a weekend/holiday or API returns 404, fall back to "latest"
+  if (!res.ok) {
+    url = `${base}/latest?from=INR&to=USD`;
+    res = await fetch(url);
+  }
+
   if (!res.ok) throw new Error(`FX fetch failed: ${res.status}`);
+
   const data = await res.json();
   const rate = data?.rates?.USD;
   if (!rate) throw new Error("FX rate USD not found in response");
   return rate; // USD for 1 INR
 }
+
 
 function todayYyyyMmDd() {
   const d = new Date();
