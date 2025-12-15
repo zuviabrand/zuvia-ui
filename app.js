@@ -67,6 +67,26 @@ const designTableBody = document.getElementById("designTableBody");
 
 let state = { fabrics: [], designs: [] };
 
+async function getUsdPerInrForDate(yyyyMmDd) {
+  // Frankfurter supports historical rates with date in URL, base currency via `from`, target via `to`.
+  // Example: https://api.frankfurter.dev/2025-12-14?from=INR&to=USD
+  const url = `https://api.frankfurter.dev/${yyyyMmDd}?from=INR&to=USD`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`FX fetch failed: ${res.status}`);
+  const data = await res.json();
+  const rate = data?.rates?.USD;
+  if (!rate) throw new Error("FX rate USD not found in response");
+  return rate; // USD for 1 INR
+}
+
+function todayYyyyMmDd() {
+  const d = new Date();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${mm}-${dd}`;
+}
+
+
 /* ------------ LOAD DATA FROM FIRESTORE ------------ */
 async function loadFabrics() {
   const snap = await getDocs(collection(db, "fabrics"));
