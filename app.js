@@ -10,7 +10,7 @@ import {
   signInWithPopup,
   signOut,
   onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"; setDoc
 
 
 const app = initializeApp(firebaseConfig);
@@ -128,6 +128,23 @@ fabricForm.addEventListener("submit", async (e) => {
     return;
   }
 
+  const fxDate = fabric.purchaseDate || todayYyyyMmDd();
+
+  let fxUsdPerInr = null;
+  let costPerMeterUsd = null;
+  
+  try {
+    fxUsdPerInr = await getUsdPerInrForDate(fxDate);
+    costPerMeterUsd = fabric.costPerMeter * fxUsdPerInr;
+  } catch (e) {
+    console.error(e);
+  }
+  
+  // 👇 ADD these fields to fabric object
+  fabric.fxDate = fxDate;
+  fabric.fxUsdPerInr = fxUsdPerInr;
+  fabric.costPerMeterUsd = costPerMeterUsd;
+
   await setDoc(doc(db, "fabrics", fabric.id), fabric);
   await loadFabrics();
   renderAll();
@@ -137,16 +154,23 @@ fabricForm.addEventListener("submit", async (e) => {
 function renderFabrics() {
   fabricTableBody.innerHTML = "";
   state.fabrics.forEach(f => {
-    const total = f.meters * f.costPerMeter;
-    const tr = document.createElement("tr");
+    const totalInr = f.meters * f.costPerMeter;
+    const totalUsd = f.fxUsdPerInr != null ? totalInr * f.fxUsdPerInr : null;
+    
     tr.innerHTML = `
       <td>${f.id}</td>
       <td>${f.name}</td>
       <td>${f.color || ""}</td>
       <td>${f.supplier || ""}</td>
       <td class="right">${f.meters.toFixed(2)}</td>
-      <td class="right">${f.costPerMeter.toFixed(2)}</td>
-      <td class="right">${total.toFixed(2)}</td>
+    
+      <td class="right">${f.costPerMeter.toFixed(2)} INR</td>
+      <td class="right">${f.costPerMeterUsd != null ? f.costPerMeterUsd.toFixed(4) + " USD" : "-"}</td>
+    
+      <td class="right">${totalInr.toFixed(2)} INR</td>
+      <td class="right">${totalUsd != null ? totalUsd.toFixed(2) + " USD" : "-"}</td>
+    `;
+
       <td class="right">
         <button class="btn-danger" data-del-fabric="${f.id}">X</button>
       </td>
@@ -201,6 +225,23 @@ designForm.addEventListener("submit", async (e) => {
     fabricPerPiece: parseFloat(fabricPerPieceInput.value),
     otherCost: parseFloat(designOtherCostInput.value || "0")
   };
+
+  const fxDate = todayYyyyMmDd();
+
+  let fxUsdPerInr = null;
+  let otherCostUsd = null;
+  
+  try {
+    fxUsdPerInr = await getUsdPerInrForDate(fxDate);
+    otherCostUsd = d.otherCost * fxUsdPerInr;
+  } catch (e) {
+    console.error(e);
+  }
+  
+  d.fxDate = fxDate;
+  d.fxUsdPerInr = fxUsdPerInr;
+  d.otherCostUsd = otherCostUsd;
+
 
   await setDoc(doc(db, "designs", d.id), d);
   await loadDesigns();
