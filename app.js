@@ -26,9 +26,14 @@ const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 
 loginBtn.onclick = async () => {
-  try { await signInWithPopup(auth, provider); }
-  catch (e) { console.error(e); alert("Login failed. Check popup blocker and try again."); }
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (e) {
+    console.error(e);
+    alert(`Login failed: ${e.code || e.message}`);
+  }
 };
+
 
 logoutBtn.onclick = async () => {
   try { await signOut(auth); }
