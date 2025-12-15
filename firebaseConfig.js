@@ -1,8 +1,8 @@
 export const firebaseConfig = {
-  apiKey: "AIzaSyAi6RcOg_8pLaj337D5MJw4LpU2QfMieu4",
-  authDomain: "zuvia-tracker.firebaseapp.com",
-  projectId: "zuvia-tracker",
-  storageBucket: "zuvia-tracker.firebasestorage.app",
-  messagingSenderId: "428384622870",
-  appId: "1:428384622870:web:7573e73262194b182ad837"
+  apiKey: "AIzaSyDY0Q4y9UW7rU7CtwgnL639dfDWmv1gjHY",
+  authDomain: "zuvia-tracker-7d7a1.firebaseapp.com",
+  projectId: "zuvia-tracker-7d7a1",
+  storageBucket: "zuvia-tracker-7d7a1.firebasestorage.app",
+  messagingSenderId: "449740638696",
+  appId: "1:449740638696:web:1b4ba778f23f17b2833c5d"
 };
