@@ -4,11 +4,37 @@ import {
   deleteDoc, doc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { firebaseConfig } from "./firebaseConfig.js";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+
 const statusText = document.getElementById("statusText");
+
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+
+loginBtn.onclick = async () => {
+  try { await signInWithPopup(auth, provider); }
+  catch (e) { console.error(e); alert("Login failed. Check popup blocker and try again."); }
+};
+
+logoutBtn.onclick = async () => {
+  try { await signOut(auth); }
+  catch (e) { console.error(e); alert("Logout failed."); }
+};
+
 
 // Forms & elements
 const fabricForm = document.getElementById("fabricForm");
@@ -238,4 +264,19 @@ document.querySelectorAll(".tab").forEach(tab => {
 });
 
 /* ------------ START ---------------- */
-initialLoad();
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    statusText.textContent = "Please login to access your tracker.";
+    loginBtn.style.display = "inline-block";
+    logoutBtn.style.display = "none";
+    state.fabrics = [];
+    state.designs = [];
+    renderAll();
+    return;
+  }
+
+  statusText.textContent = `Logged in as ${user.email}. Loading data…`;
+  loginBtn.style.display = "none";
+  logoutBtn.style.display = "inline-block";
+  await initialLoad();
+});
